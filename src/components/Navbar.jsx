@@ -61,14 +61,17 @@ export const Navbar = () => {
     className="md:hidden p-2 text-foreground z-50"
     aria-label={isMenuOpen ? "Close menu" : "Open menu"}
   >
-    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}{""}
   </button>
 
   {/* Mobile menu */}
   <div
     className={cn(
-      "fixed inset-0 bg-background/95 backdrop-blur-md z-50 flex flex-col items-center justify-center md:hidden transition-all duration-300",
-      isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col items-center justify-center",
+      "md:hidden transition-all duration-300",
+      isMenuOpen
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
     )}
   >
     <div className="flex flex-col space-y-8 text-xl px-4">
