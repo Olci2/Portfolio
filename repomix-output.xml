@@ -589,34 +589,6 @@ createRoot(document.getElementById('root')).render(
 )
 </file>
 
-<file path=".gitignore">
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-repomix-output.xml
-</file>
-
 <file path="eslint.config.js">
 import js from '@eslint/js'
 import globals from 'globals'
@@ -663,110 +635,6 @@ export default defineConfig({
     },
   },
 })
-</file>
-
-<file path="src/components/AboutSection.jsx">
-import { Briefcase, Code, User } from "lucide-react";
-import CV from "../assets/Oldzhay_Ahmed_CV.pdf";
-
-export const AboutSection = () => {
-  return (
-    <section id="about" className="py-24 px-4 relative">
-      {""}
-      <div className="container mx-auto max-w-5xl ">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-          About <span className="text-primary">Me</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h3 className="text-2xl font-semibold ">
-              Passionate Web Developer & Tech Creator
-            </h3>
-
-            <p className="text-muted-foreground">
-              I'm a dedicated web developer passionate about building dynamic,
-              user-friendly websites. With expertise in HTML, CSS, JavaScript,
-              and modern frameworks like React and Node.js, I create responsive
-              and engaging web applications. I thrive on solving complex
-              problems and continuously learning new technologies to sharpen my
-              skills and deliver exceptional results.
-            </p>
-
-            <p className="text-muted-foreground">
-              Beyond coding, I love sharing knowledge through tech blogging and
-              tutorials. When I'm not immersed in development, you'll find me
-              exploring the latest tech trends, contributing to open-source
-              projects, or indulging my passions for photography and travel.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-              <a href="#contact" className="cosmic-button">
-                {""}
-                Get In Touch
-              </a>
-              {/*cv*/}
-              <a
-                href={CV}
-                download="Oldzhay_Ahmed_CV.pdf"
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300 text-center"
-              >
-                Download CV
-              </a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6">
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Code className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left ">
-                  <h4 className="font-semibold text-lg">Web Development</h4>
-                  <p className="text-muted-foreground ">
-                    Crafting clean, responsive, and dynamic websites with React,
-                    Node.js, and modern web tools to bring ideas to life on the
-                    web.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <User className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left ">
-                  <h4 className="font-semibold text-lg">UI/UX Design</h4>
-                  <p className="text-muted-foreground ">
-                    Designing intuitive interfaces and smooth experiences that
-                    connect with users and make digital interactions effortless.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Briefcase className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left ">
-                  <h4 className="font-semibold text-lg">Professional Growth</h4>
-                  <p className="text-muted-foreground ">
-                    Continuously learning, adapting, and bringing a strong work
-                    ethic to every project to achieve both personal and
-                    professional excellence.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 </file>
 
 <file path="src/components/ContactSection.jsx">
@@ -927,53 +795,6 @@ export const ContactSection = () => {
             </form>
           </div>
         </div>
-      </div>
-    </section>
-  );
-};
-</file>
-
-<file path="src/components/HeroSection.jsx">
-import { ArrowDown } from "lucide-react";
-
-export const HeroSection = () => {
-  return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 md:pt-32"
-    >
-      <div className="container max-w-4xl mx-auto text-center z-10">
-        <div className="space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            <span className="opacity-0 animate-fade-in"> Hi, I'm </span>
-            <span className="text-primary opacity-0 animate-fade-in-delay-1">
-              {" "}
-              Oldzhay{" "}
-            </span>
-            <span className="text-gradient ml-2 opacity-0 animate-fade-in-delay-2">
-              {" "}
-              Ahmed{" "}
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl md:auto opacity-0 animate-fade-in-delay-3">
-            I'm very passionate about learning new things, and this is my very
-            first project in React. I'm excited to explore web development and
-            improve my skills through hands-on experience. This project is just
-            the beginning of my journey into building amazing apps!
-          </p>
-
-          <div className="pt-4 opacity-0 animate-fade-in-delay-4">
-            <a href="#projects" className="cosmic-button">
-              View My Work
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce z-10">
-        <span> Scroll </span>
-        <ArrowDown className="h-5 w-5 text-primary" />
       </div>
     </section>
   );
@@ -1286,153 +1107,6 @@ export const SkillsSection = () => {
 };
 </file>
 
-<file path="src/components/StarBackground.jsx">
-import { useEffect, useState } from "react";
-
-// id, size, x, y, opacity, animationDuration
-// id, size, x, y, delay, animationDuration
-
-export const StarBackground = () => {
-  const [stars, setStars] = useState([]);
-  const [meteors, setMeteors] = useState([]);
-
-  useEffect(() => {
-    generateStars();
-    generateMeteors();
-
-    const handleResize = () => {
-      generateStars();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const generateStars = () => {
-    const numberOfStars = Math.floor(
-      (window.innerWidth * window.innerHeight) / 10000,
-    );
-
-    const newStars = [];
-
-    for (let i = 0; i < numberOfStars; i++) {
-      newStars.push({
-        id: i,
-        size: Math.random() * 3 + 1,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        opacity: Math.random() * 0.5 + 0.5,
-        animationDuration: Math.random() * 4 + 2,
-      });
-    }
-
-    setStars(newStars);
-  };
-
-  const generateMeteors = () => {
-    const numberOfMeteors = 4;
-    const newMeteors = [];
-
-    for (let i = 0; i < numberOfMeteors; i++) {
-      newMeteors.push({
-        id: i,
-        size: Math.random() * 2 + 1,
-        x: Math.random() * 100,
-        y: Math.random() * 20,
-        delay: Math.random() * 15,
-        animationDuration: Math.random() * 3 + 3,
-      });
-    }
-
-    setMeteors(newMeteors);
-  };
-
-  return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {stars.map((star) => (
-        <div
-          key={star.id}
-          className="star animate-pulse-subtle"
-          style={{
-            width: star.size + "px",
-            height: star.size + "px",
-            left: star.x + "%",
-            top: star.y + "%",
-            opacity: star.opacity,
-            animationDuration: star.animationDuration + "s",
-          }}
-        />
-      ))}
-
-      {meteors.map((meteor) => (
-        <div
-          key={meteor.id}
-          className="meteor animate-meteor"
-          style={{
-            width: meteor.size * 50 + "px",
-            height: meteor.size * 2 + "px",
-            left: meteor.x + "%",
-            top: meteor.y + "%",
-            animationDelay: meteor.delay + "s",
-            animationDuration: meteor.animationDuration + "s",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-</file>
-
-<file path="src/components/ThemeToggle.jsx">
-import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
-import { cn } from "@/components/lib/utils";
-
-export const ThemeToggle = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "dark") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setIsDarkMode(true);
-    }
-  };
-
-  return (
-    <button
-      onClick={toggleTheme}
-      className={cn(
-          "fixed max-sm:hidden top-5 right-5 z-50 p-2 rounded-full transition-colors duration-300",
-        "focus:outline-hidden",
-      )}
-    >
-      {isDarkMode ? (
-        <Sun className="h-6 w-6 text-yellow-300" />
-      ) : (
-        <Moon className="h-6 w-6 text-blue-900" />
-      )}
-    </button>
-  );
-};
-</file>
-
 <file path="src/pages/Home.jsx">
 import { ThemeToggle } from "../components/ThemeToggle";
 import { StarBackground } from "../components/StarBackground";
@@ -1497,6 +1171,34 @@ function App() {
 }
 
 export default App
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+repomix-output.xml
 </file>
 
 <file path="index.html">
@@ -1620,6 +1322,315 @@ Oldzhay Ahmed
 oldzhay.ahmed.work@gmail.com
 
 💼 https://www.linkedin.com/in/oldzhay-ahmed-it-/
+</file>
+
+<file path="src/components/AboutSection.jsx">
+import { Briefcase, Code, User } from "lucide-react";
+import CV from "../assets/Oldzhay_Ahmed_CV.pdf";
+
+export const AboutSection = () => {
+  return (
+    <section id="about" className="py-24 px-4 relative">
+      {""}
+      <div className="container mx-auto max-w-5xl ">
+        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+          About <span className="text-primary">Me</span>
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-semibold ">
+              Passionate Web Developer & Tech Creator
+            </h3>
+
+            <p className="text-muted-foreground">
+              I'm a dedicated web developer passionate about building dynamic,
+              user-friendly websites. With expertise in HTML, CSS, JavaScript,
+              and modern frameworks like React and Node.js, I create responsive
+              and engaging web applications. I thrive on solving complex
+              problems and continuously learning new technologies to sharpen my
+              skills and deliver exceptional results.
+            </p>
+
+            <p className="text-muted-foreground">
+              Beyond coding, I love sharing knowledge through tech blogging and
+              tutorials. When I'm not immersed in development, you'll find me
+              exploring the latest tech trends, contributing to open-source
+              projects, or indulging my passions for photography and travel.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+              <a href="#contact" className="cosmic-button">
+                {""}
+                Get In Touch
+              </a>
+              {/*cv*/}
+              <a
+                href={CV}
+                download="Oldzhay_Ahmed_CV.pdf"
+                className="px-6 py-2 rounded-full border border-primary text-primary bg-transparent hover:bg-primary/10 transition-all duration-300 text-center hover:shadow-[0_0_10px_rgba(139,92,246,0.5)] hover:scale-105 active:scale-95 whitespace-nowrap"
+              >
+                Download CV
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            <div className="gradient-border p-6 card-hover">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Code className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-left ">
+                  <h4 className="font-semibold text-lg">Web Development</h4>
+                  <p className="text-muted-foreground ">
+                    Crafting clean, responsive, and dynamic websites with React,
+                    Node.js, and modern web tools to bring ideas to life on the
+                    web.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="gradient-border p-6 card-hover">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <User className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-left ">
+                  <h4 className="font-semibold text-lg">UI/UX Design</h4>
+                  <p className="text-muted-foreground ">
+                    Designing intuitive interfaces and smooth experiences that
+                    connect with users and make digital interactions effortless.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="gradient-border p-6 card-hover">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Briefcase className="h-6 w-6 text-primary" />
+                </div>
+                <div className="text-left ">
+                  <h4 className="font-semibold text-lg">Professional Growth</h4>
+                  <p className="text-muted-foreground ">
+                    Continuously learning, adapting, and bringing a strong work
+                    ethic to every project to achieve both personal and
+                    professional excellence.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+</file>
+
+<file path="src/components/HeroSection.jsx">
+import { ArrowDown } from "lucide-react";
+
+export const HeroSection = () => {
+  return (
+    <section
+      id="hero"
+      className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 md:pt-32"
+    >
+      <div className="container max-w-4xl mx-auto text-center z-10">
+        <div className="space-y-6">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <span className="opacity-0 animate-fade-in"> Hi, I'm </span>
+            <span className="text-primary opacity-0 animate-fade-in-delay-1">
+              {" "}
+              Oldzhay{" "}
+            </span>
+            <span className="text-gradient ml-2 opacity-0 animate-fade-in-delay-2">
+              {" "}
+              Ahmed{" "}
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl md:auto opacity-0 animate-fade-in-delay-3">
+            I'm very passionate about learning new things, and this is my very
+            first project in React. I'm excited to explore web development and
+            improve my skills through hands-on experience. This project is just
+            the beginning of my journey into building amazing apps!
+          </p>
+
+          <div className="pt-4 opacity-0 animate-fade-in-delay-4">
+            <a href="#projects" className="cosmic-button">
+              View My Work
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="#about"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce z-10"
+      >
+        <span> Scroll </span>
+        <ArrowDown className="h-5 w-5 text-primary" />
+      </a>
+    </section>
+  );
+};
+</file>
+
+<file path="src/components/StarBackground.jsx">
+import { useEffect, useState } from "react";
+
+export const StarBackground = () => {
+  const [stars, setStars] = useState([]);
+  const [meteors, setMeteors] = useState([]);
+  const [isDark, setIsDark] = useState(
+    document.documentElement.classList.contains("dark"),
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isDark) {
+      setStars([]);
+      setMeteors([]);
+      return;
+    }
+    generateStars();
+    generateMeteors();
+
+    const handleResize = () => generateStars();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isDark]);
+
+  const generateStars = () => {
+    const numberOfStars = Math.floor(
+      (window.innerWidth * window.innerHeight) / 10000,
+    );
+    const newStars = [];
+    for (let i = 0; i < numberOfStars; i++) {
+      newStars.push({
+        id: i,
+        size: Math.random() * 3 + 1,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.5 + 0.5,
+        animationDuration: Math.random() * 4 + 2,
+      });
+    }
+    setStars(newStars);
+  };
+
+  const generateMeteors = () => {
+    const newMeteors = [];
+    for (let i = 0; i < 4; i++) {
+      newMeteors.push({
+        id: i,
+        size: Math.random() * 2 + 1,
+        x: Math.random() * 100,
+        y: Math.random() * 20,
+        delay: Math.random() * 15,
+        animationDuration: Math.random() * 3 + 3,
+      });
+    }
+    setMeteors(newMeteors);
+  };
+
+  if (!isDark) return null;
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="star animate-pulse-subtle"
+          style={{
+            width: star.size + "px",
+            height: star.size + "px",
+            left: star.x + "%",
+            top: star.y + "%",
+            opacity: star.opacity,
+            animationDuration: star.animationDuration + "s",
+          }}
+        />
+      ))}
+      {meteors.map((meteor) => (
+        <div
+          key={meteor.id}
+          className="meteor animate-meteor"
+          style={{
+            width: meteor.size * 50 + "px",
+            height: meteor.size * 2 + "px",
+            left: meteor.x + "%",
+            top: meteor.y + "%",
+            animationDelay: meteor.delay + "s",
+            animationDuration: meteor.animationDuration + "s",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/ThemeToggle.jsx">
+import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import { cn } from "@/components/lib/utils";
+
+export const ThemeToggle = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const applyTheme = (dark) => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    setIsDarkMode(dark);
+  };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    // Set initial theme from system
+    applyTheme(mediaQuery.matches);
+
+    // Watch for system theme changes
+    const handleChange = (e) => applyTheme(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  const toggleTheme = () => applyTheme(!isDarkMode);
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className={cn(
+        "fixed max-sm:hidden top-5 right-5 z-50 p-2 rounded-full transition-colors duration-300",
+        "focus:outline-hidden",
+      )}
+    >
+      {isDarkMode ? (
+        <Sun className="h-6 w-6 text-yellow-300" />
+      ) : (
+        <Moon className="h-6 w-6 text-blue-900" />
+      )}
+    </button>
+  );
+};
 </file>
 
 </files>
