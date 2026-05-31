@@ -5,34 +5,35 @@ import { cn } from "@/components/lib/utils";
 export const ThemeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "dark") {
-      setIsDarkMode(true);
+  const applyTheme = (dark) => {
+    if (dark) {
       document.documentElement.classList.add("dark");
     } else {
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
     }
+    setIsDarkMode(dark);
+  };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    // Set initial theme from system
+    applyTheme(mediaQuery.matches);
+
+    // Watch for system theme changes
+    const handleChange = (e) => applyTheme(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setIsDarkMode(true);
-    }
-  };
+  const toggleTheme = () => applyTheme(!isDarkMode);
 
   return (
     <button
       onClick={toggleTheme}
       className={cn(
-          "fixed max-sm:hidden top-5 right-5 z-50 p-2 rounded-full transition-colors duration-300",
+        "fixed max-sm:hidden top-5 right-5 z-50 p-2 rounded-full transition-colors duration-300",
         "focus:outline-hidden",
       )}
     >

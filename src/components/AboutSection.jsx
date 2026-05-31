@@ -41,7 +41,7 @@ export const AboutSection = () => {
               <a
                 href={CV}
                 download="Oldzhay_Ahmed_CV.pdf"
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300 text-center"
+                className="px-6 py-2 rounded-full border border-primary text-primary bg-transparent hover:bg-primary/10 transition-all duration-300 text-center hover:shadow-[0_0_10px_rgba(139,92,246,0.5)] hover:scale-105 active:scale-95 whitespace-nowrap"
               >
                 Download CV
               </a>
