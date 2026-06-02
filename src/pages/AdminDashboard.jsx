@@ -9,31 +9,31 @@ export const AdminDashboard = () => {
     title: "",
     description: "",
     tech: "",
-    link: "",
+    demoUrl: "",   // ✅ renamed from 'link'
+    githubUrl: "", // ✅ added separate github field
     image: "",
   });
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("adminToken");
 
   useEffect(() => {
-  const storedToken = localStorage.getItem("adminToken");
+    const storedToken = localStorage.getItem("adminToken");
 
-  if (!storedToken) {
-    navigate("/admin");
-    return;
-  }
+    if (!storedToken) {
+      navigate("/admin");
+      return;
+    }
 
-  fetchProjects();
-}, [navigate]);
+    fetchProjects();
+  }, [navigate]);
 
   const fetchProjects = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/projects`);
       const data = await res.json();
       setProjects(data);
-    } catch  {
+    } catch {
       setError("Failed to load projects");
     }
   };
@@ -41,6 +41,8 @@ export const AdminDashboard = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     setError("");
+
+    const token = localStorage.getItem("adminToken"); // ✅ read fresh from storage
 
     const techArray = form.tech
       .split(",")
@@ -67,17 +69,19 @@ export const AdminDashboard = () => {
         title: "",
         description: "",
         tech: "",
-        link: "",
+        demoUrl: "",
+        githubUrl: "",
         image: "",
       });
 
       fetchProjects();
-    } catch  {
+    } catch {
       setError("Something went wrong.");
     }
   };
 
   const handleDelete = async (id) => {
+    const token = localStorage.getItem("adminToken"); // ✅ read fresh from storage
     try {
       await fetch(`${API_BASE}/api/projects/${id}`, {
         method: "DELETE",
@@ -87,7 +91,7 @@ export const AdminDashboard = () => {
       });
 
       fetchProjects();
-    } catch  {
+    } catch {
       setError("Failed to delete project");
     }
   };
@@ -96,6 +100,15 @@ export const AdminDashboard = () => {
     localStorage.removeItem("adminToken");
     navigate("/admin");
   };
+
+  // Fields rendered as simple text inputs
+  const textFields = [
+    { key: "title", label: "Title", required: true },
+    { key: "description", label: "Description", required: false },
+    { key: "demoUrl", label: "Demo URL", required: false },       // ✅ updated
+    { key: "githubUrl", label: "GitHub URL", required: false },   // ✅ added
+    { key: "image", label: "Image URL", required: false },
+  ];
 
   return (
     <div className="min-h-screen bg-background p-8 max-w-3xl mx-auto">
@@ -115,20 +128,15 @@ export const AdminDashboard = () => {
         <h2 className="text-xl font-semibold mb-4">Add Project</h2>
 
         <form onSubmit={handleAdd} className="space-y-3">
-          {["title", "description", "link", "image"].map((field) => (
-            <div key={field}>
-              <label className="block text-sm mb-1 capitalize">
-                {field}
-              </label>
-
+          {textFields.map(({ key, label, required }) => (
+            <div key={key}>
+              <label className="block text-sm mb-1">{label}</label>
               <input
                 type="text"
-                value={form[field]}
-                onChange={(e) =>
-                  setForm({ ...form, [field]: e.target.value })
-                }
+                value={form[key]}
+                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                 className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                required={field === "title"}
+                required={required}
               />
             </div>
           ))}
@@ -137,13 +145,10 @@ export const AdminDashboard = () => {
             <label className="block text-sm mb-1">
               Tech (comma separated)
             </label>
-
             <input
               type="text"
               value={form.tech}
-              onChange={(e) =>
-                setForm({ ...form, tech: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, tech: e.target.value })}
               placeholder="React, Node.js, MongoDB"
               className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
@@ -173,7 +178,29 @@ export const AdminDashboard = () => {
                 key={p._id}
                 className="flex justify-between items-center bg-card border border-border px-4 py-3 rounded-lg"
               >
-                <span className="font-medium">{p.title}</span>
+                <div className="text-left">
+                  <p className="font-medium">{p.title}</p>
+                  {p.demoUrl && (
+                    <a
+                      href={p.demoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Demo ↗
+                    </a>
+                  )}
+                  {p.githubUrl && (
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-primary hover:underline ml-3"
+                    >
+                      GitHub ↗
+                    </a>
+                  )}
+                </div>
 
                 <button
                   onClick={() => handleDelete(p._id)}
