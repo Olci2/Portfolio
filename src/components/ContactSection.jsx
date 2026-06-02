@@ -6,17 +6,32 @@ import { useState } from "react";
 export const ContactSection = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("http://localhost:5001/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
       toast({
         title: "Message sent!",
         description: "Thank you for your message. I'll get back to you soon.",
       });
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      toast({
+        title: "Something went wrong.",
+        description: "Please try again or email me directly.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -33,9 +48,7 @@ export const ContactSection = () => {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="flex flex-col items-center justify-center space-y-8">
-            <h3 className="text-2xl font-semibold text-center">
-              Contact Information
-            </h3>
+            <h3 className="text-2xl font-semibold text-center">Contact Information</h3>
             <div className="space-y-6 flex flex-col">
               <div className="flex items-center space-x-4">
                 <div className="p-3 rounded-full bg-primary/10">
@@ -43,10 +56,7 @@ export const ContactSection = () => {
                 </div>
                 <div className="text-left">
                   <h4 className="font-medium">Email</h4>
-                  <a
-                    href="mailto:oldzhay.ahmed.work@gmail.com"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
+                  <a href="mailto:oldzhay.ahmed.work@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
                     oldzhay.ahmed.work@gmail.com
                   </a>
                 </div>
@@ -64,20 +74,10 @@ export const ContactSection = () => {
             <div className="flex flex-col items-center space-y-4">
               <h4 className="font-medium">Connect With Me</h4>
               <div className="flex space-x-4">
-                <a
-                  href="https://www.linkedin.com/in/oldzhay-ahmed-it-/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                >
+                <a href="https://www.linkedin.com/in/oldzhay-ahmed-it-/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-primary transition-colors duration-300">
                   <Linkedin size={24} />
                 </a>
-                <a
-                  href="https://github.com/Olci2/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                >
+                <a href="https://github.com/Olci2/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-primary transition-colors duration-300">
                   <Github size={24} />
                 </a>
               </div>
@@ -87,57 +87,44 @@ export const ContactSection = () => {
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Your Name
-                </label>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">Your Name</label>
                 <input
                   type="text"
                   id="name"
-                  name="name"
                   required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary"
-                  placeholder="Oldzhay Ahmed..."
+                  placeholder="John Doe..."
                 />
               </div>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Your Email
-                </label>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">Your Email</label>
                 <input
                   type="email"
                   id="email"
-                  name="email"
                   required
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary"
                   placeholder="john@gmail.com"
                 />
               </div>
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Your Message
-                </label>
+                <label htmlFor="message" className="block text-sm font-medium mb-2">Your Message</label>
                 <textarea
                   id="message"
-                  name="message"
                   required
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
                   className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary resize-none"
                   placeholder="Hello, I'd like to talk about..."
                 />
               </div>
               <button
                 type="submit"
-                className={cn(
-                  "cosmic-button w-full flex items-center justify-center gap-2",
-                )}
+                disabled={isSubmitting}
+                className={cn("cosmic-button w-full flex items-center justify-center gap-2")}
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
                 <Send size={16} />
