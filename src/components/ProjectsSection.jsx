@@ -1,12 +1,14 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const API_BASE = "https://portfolio-backend-production-1584.up.railway.app";
+
 export const ProjectSection = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/projects")
+    fetch(`${API_BASE}/api/projects`)
       .then((res) => res.json())
       .then((data) => {
         setProjects(data);
@@ -24,6 +26,7 @@ export const ProjectSection = () => {
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
           Featured <span className="text-primary">Projects</span>
         </h2>
+
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
           A curated selection of recent projects that showcase clean design,
           practical engineering, and real-world problem-solving — explore demos,
@@ -50,9 +53,10 @@ export const ProjectSection = () => {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
+
                 <div className="p-6">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map((tag) => (
+                    {(project.tech || []).map((tag) => (
                       <span
                         key={tag}
                         className="px-2 py-1 text-xs font-medium border rounded-full bg-primary text-secondary-foreground"
@@ -61,28 +65,38 @@ export const ProjectSection = () => {
                       </span>
                     ))}
                   </div>
+
                   <h3 className="text-xl font-semibold mb-1">
                     {project.title}
                   </h3>
+
                   <p className="text-muted-foreground text-sm mb-4">
                     {project.description}
                   </p>
+
                   <div className="flex justify-between items-center">
                     <div className="flex space-x-3">
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                      >
-                        <ExternalLink size={20} />
-                      </a>
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                      >
-                        <Github size={20} />
-                      </a>
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                        >
+                          <ExternalLink size={20} />
+                        </a>
+                      )}
+
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                        >
+                          <Github size={20} />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -96,6 +110,7 @@ export const ProjectSection = () => {
             className="cosmic-button w-fit flex items-center mx-auto gap-2"
             href="https://github.com/Olc2"
             target="_blank"
+            rel="noreferrer"
           >
             Check My Github
             <ArrowRight size={16} />
