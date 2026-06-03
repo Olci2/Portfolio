@@ -6,6 +6,7 @@ const navItems = [
   { name: "Home", href: "#hero" },
   { name: "About", href: "#about" },
   { name: "Skills", href: "#skills" },
+  { name: "Journey", href: "#timeline" },
   { name: "Projects", href: "#projects" },
   { name: "Contact", href: "#contact" },
 ];
@@ -14,18 +15,15 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.classList.contains("dark")
+    document.documentElement.classList.contains("dark"),
   );
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Keep in sync if ThemeToggle (desktop) changes the theme
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.documentElement.classList.contains("dark"));
@@ -39,11 +37,8 @@ export const Navbar = () => {
 
   const toggleTheme = () => {
     const next = !isDarkMode;
-    if (next) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    if (next) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
     setIsDarkMode(next);
   };
 
@@ -51,7 +46,9 @@ export const Navbar = () => {
     <nav
       className={cn(
         "fixed w-full z-40 transition-all duration-300",
-        isScrolled ? "py-3 bg-background/80 backdrop-blur-md shadow-xs" : "py-5"
+        isScrolled
+          ? "py-3 bg-background/80 backdrop-blur-md shadow-xs"
+          : "py-5",
       )}
     >
       <div className="container mx-auto px-4 md:px-20 flex items-center justify-between">
@@ -78,7 +75,7 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile toggle button */}
+        {/* Mobile toggle */}
         <button
           onClick={() => setIsMenuOpen((prev) => !prev)}
           className="md:hidden p-2 text-foreground z-50"
@@ -94,7 +91,7 @@ export const Navbar = () => {
             "md:hidden transition-all duration-300",
             isMenuOpen
               ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+              : "opacity-0 pointer-events-none",
           )}
         >
           <div className="flex flex-col space-y-8 text-xl px-4 items-center">
@@ -109,11 +106,9 @@ export const Navbar = () => {
               </a>
             ))}
 
-            {/* ✅ Theme toggle inside mobile menu */}
             <button
               onClick={toggleTheme}
               className="flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors duration-300"
-              aria-label="Toggle theme"
             >
               {isDarkMode ? (
                 <>

@@ -1,316 +1,362 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Github,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 const API_BASE = "https://portfolio-backend-production-1584.up.railway.app";
 
-export const AdminDashboard = () => {
-  const [projects, setProjects] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    tech: "",
-    demoUrl: "",
-    githubUrl: "",
-    image: "", // holds final URL (either typed or returned from upload)
-  });
-  const [imageFile, setImageFile] = useState(null);     // selected file object
-  const [imagePreview, setImagePreview] = useState(""); // local preview URL
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
-  const fileInputRef = useRef(null);
+const STATUS_STYLES = {
+  Completed: "bg-green-500/20 text-green-400 border border-green-500/30",
+  "In Development":
+    "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
+  Concept: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+  Archived: "bg-gray-500/20 text-gray-400 border border-gray-500/30",
+};
 
-  const navigate = useNavigate();
+// Screenshot gallery shown inside expanded card
+const ScreenshotGallery = ({ screenshots, title }) => {
+  const [active, setActive] = useState(0);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("adminToken");
-    if (!storedToken) {
-      navigate("/admin");
-      return;
-    }
-    fetchProjects();
-  }, [navigate]);
-
-  const fetchProjects = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/api/projects`);
-      const data = await res.json();
-      setProjects(data);
-    } catch {
-      setError("Failed to load projects");
-    }
-  };
-
-  // When user picks a file
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-    setForm((prev) => ({ ...prev, image: "" })); // clear manual URL if file chosen
-  };
-
-  // Clear file selection
-  const clearFile = () => {
-    setImageFile(null);
-    setImagePreview("");
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    const token = localStorage.getItem("adminToken");
-    let imageUrl = form.image;
-
-    // If a file was selected, upload it first
-    if (imageFile) {
-      setUploading(true);
-      try {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-
-        const uploadRes = await fetch(`${API_BASE}/api/upload`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
-
-        if (!uploadRes.ok) {
-          const data = await uploadRes.json();
-          setError(data.message || "Image upload failed");
-          setUploading(false);
-          return;
-        }
-
-        const uploadData = await uploadRes.json();
-        imageUrl = uploadData.url;
-      } catch {
-        setError("Image upload failed. Please try again.");
-        setUploading(false);
-        return;
-      }
-      setUploading(false);
-    }
-
-    const techArray = form.tech
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
-
-    try {
-      const res = await fetch(`${API_BASE}/api/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...form, image: imageUrl, tech: techArray }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.message || "Failed to add project");
-        return;
-      }
-
-      // Reset form
-      setForm({ title: "", description: "", tech: "", demoUrl: "", githubUrl: "", image: "" });
-      clearFile();
-      fetchProjects();
-    } catch {
-      setError("Something went wrong.");
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const token = localStorage.getItem("adminToken");
-    try {
-      await fetch(`${API_BASE}/api/projects/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchProjects();
-    } catch {
-      setError("Failed to delete project");
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/admin");
-  };
-
-  const textFields = [
-    { key: "title", label: "Title", required: true },
-    { key: "description", label: "Description", required: false },
-    { key: "demoUrl", label: "Demo URL", required: false },
-    { key: "githubUrl", label: "GitHub URL", required: false },
-  ];
+  if (!screenshots || screenshots.length === 0) return null;
 
   return (
-    <div className="min-h-screen bg-background p-8 max-w-3xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-red-500 hover:underline"
-        >
-          Logout
-        </button>
+    <div className="mt-4">
+      {/* Main image */}
+      <div className="rounded-lg overflow-hidden border border-border mb-2 h-56">
+        <img
+          src={screenshots[active]}
+          alt={`${title} screenshot ${active + 1}`}
+          className="w-full h-full object-cover"
+        />
       </div>
-
-      {/* Add Project Form */}
-      <div className="bg-card border border-border rounded-xl p-6 mb-10">
-        <h2 className="text-xl font-semibold mb-4">Add Project</h2>
-
-        <form onSubmit={handleAdd} className="space-y-3">
-          {textFields.map(({ key, label, required }) => (
-            <div key={key}>
-              <label className="block text-sm mb-1">{label}</label>
-              <input
-                type="text"
-                value={form[key]}
-                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                required={required}
+      {/* Thumbnails */}
+      {screenshots.length > 1 && (
+        <div className="flex gap-2 flex-wrap">
+          {screenshots.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`w-14 h-14 rounded-md overflow-hidden border-2 transition-all ${
+                active === i
+                  ? "border-primary"
+                  : "border-border opacity-60 hover:opacity-100"
+              }`}
+            >
+              <img
+                src={src}
+                alt={`thumb ${i + 1}`}
+                className="w-full h-full object-cover"
               />
-            </div>
+            </button>
           ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
-          {/* Tech tags */}
+// Expanded detail panel shown below a clicked card
+const ProjectDetail = ({ project, onClose }) => {
+  return (
+    <div className="col-span-full bg-card border border-primary/30 rounded-xl p-6 md:p-8 relative animate-fade-in">
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary/50 transition-colors"
+        aria-label="Close"
+      >
+        <X size={18} />
+      </button>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* LEFT */}
+        <div className="space-y-5">
+          {/* Header */}
           <div>
-            <label className="block text-sm mb-1">Tech (comma separated)</label>
-            <input
-              type="text"
-              value={form.tech}
-              onChange={(e) => setForm({ ...form, tech: e.target.value })}
-              placeholder="React, Node.js, MongoDB"
-              className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-
-          {/* Image — file picker + URL fallback */}
-          <div>
-            <label className="block text-sm mb-1">Project Image</label>
-
-            {/* File picker */}
-            <div className="flex items-center gap-3 mb-2">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-2 rounded-md border border-border bg-background hover:bg-secondary transition text-sm"
-              >
-                Choose File
-              </button>
-              {imageFile && (
-                <span className="text-sm text-muted-foreground flex items-center gap-2">
-                  {imageFile.name}
-                  <button
-                    type="button"
-                    onClick={clearFile}
-                    className="text-red-400 hover:text-red-600 text-xs"
-                  >
-                    ✕ Remove
-                  </button>
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
+              <h3 className="text-2xl font-bold">{project.title}</h3>
+              {project.status && (
+                <span
+                  className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_STYLES[project.status] || STATUS_STYLES.Concept}`}
+                >
+                  {project.status}
                 </span>
               )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
             </div>
+            <p className="text-muted-foreground leading-relaxed">
+              {project.longDescription || project.description}
+            </p>
+          </div>
 
-            {/* Preview */}
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full h-40 object-cover rounded-md mb-2 border border-border"
-              />
+          {/* Tech stack */}
+          {project.tech?.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                Tech Stack
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.tech.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-1 text-xs font-medium border border-primary/40 rounded-full bg-primary/10 text-primary"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* What I learned */}
+          {project.learned && (
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                What I Learned
+              </h4>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {project.learned}
+              </p>
+            </div>
+          )}
+
+          {/* Challenges */}
+          {project.challenges && (
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                Challenges
+              </h4>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {project.challenges}
+              </p>
+            </div>
+          )}
+
+          {/* Links */}
+          <div className="flex gap-4 pt-2">
+            {project.demoUrl && (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 cosmic-button text-sm"
+              >
+                <ExternalLink size={15} /> Live Demo
+              </a>
             )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-all text-sm"
+              >
+                <Github size={15} /> GitHub
+              </a>
+            )}
+          </div>
+        </div>
 
-            {/* URL fallback */}
-            {!imageFile && (
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">
-                  Or paste an image URL:
-                </p>
-                <input
-                  type="text"
-                  value={form.image}
-                  onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  placeholder="https://example.com/image.png"
-                  className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+        {/* RIGHT — screenshots */}
+        <div>
+          {/* Cover image if no screenshots */}
+          {(!project.screenshots || project.screenshots.length === 0) &&
+            project.image && (
+              <div className="rounded-lg overflow-hidden border border-border h-56">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}
-          </div>
-
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={uploading}
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:opacity-90 transition disabled:opacity-50"
-          >
-            {uploading ? "Uploading image..." : "Add Project"}
-          </button>
-        </form>
-      </div>
-
-      {/* Projects List */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Existing Projects</h2>
-
-        {projects.length === 0 ? (
-          <p className="text-muted-foreground">No projects yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {projects.map((p) => (
-              <li
-                key={p._id}
-                className="flex justify-between items-center bg-card border border-border px-4 py-3 rounded-lg"
-              >
-                <div className="flex items-center gap-3">
-                  {p.image && (
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="w-12 h-12 object-cover rounded-md border border-border"
-                    />
-                  )}
-                  <div className="text-left">
-                    <p className="font-medium">{p.title}</p>
-                    <div className="flex gap-3">
-                      {p.demoUrl && (
-                        <a href={p.demoUrl} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">
-                          Demo ↗
-                        </a>
-                      )}
-                      {p.githubUrl && (
-                        <a href={p.githubUrl} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">
-                          GitHub ↗
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => handleDelete(p._id)}
-                  className="text-red-500 text-sm hover:underline"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+          <ScreenshotGallery
+            screenshots={project.screenshots}
+            title={project.title}
+          />
+        </div>
       </div>
     </div>
+  );
+};
+
+export const ProjectSection = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/projects`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch projects:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleCardClick = (id) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  // Insert detail panel after the card's row
+  // We render cards + detail panel in a flat list with col-span tricks
+  const renderProjects = () => {
+    const items = [];
+
+    projects.forEach((project) => {
+      // Card
+      items.push(
+        <div
+          key={project._id}
+          onClick={() => handleCardClick(project._id)}
+          className={`group bg-card rounded-xl overflow-hidden shadow-xs card-hover cursor-pointer border-2 transition-all duration-300 ${
+            expandedId === project._id
+              ? "border-primary/60"
+              : "border-transparent hover:border-primary/20"
+          }`}
+        >
+          {/* Image */}
+          <div className="h-48 overflow-hidden">
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+
+          <div className="p-6">
+            {/* Status + tags */}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              {project.status && (
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[project.status] || STATUS_STYLES.Concept}`}
+                >
+                  {project.status}
+                </span>
+              )}
+              {(project.tech || []).slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-1 text-xs font-medium border rounded-full bg-primary text-secondary-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+              {project.tech?.length > 3 && (
+                <span className="text-xs text-muted-foreground">
+                  +{project.tech.length - 3} more
+                </span>
+              )}
+            </div>
+
+            <h3 className="text-xl font-semibold mb-1">{project.title}</h3>
+            <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+              {project.description}
+            </p>
+
+            {/* Footer */}
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-3">
+                {project.demoUrl && (
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                  >
+                    <ExternalLink size={18} />
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                  >
+                    <Github size={18} />
+                  </a>
+                )}
+              </div>
+
+              <span className="text-xs text-primary flex items-center gap-1 font-medium">
+                {expandedId === project._id ? (
+                  <>
+                    <ChevronUp size={14} /> Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={14} /> Details
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
+        </div>,
+      );
+
+      // Insert detail panel after this card if it's the expanded one
+      if (expandedId === project._id) {
+        items.push(
+          <ProjectDetail
+            key={`detail-${project._id}`}
+            project={project}
+            onClose={() => setExpandedId(null)}
+          />,
+        );
+      }
+    });
+
+    return items;
+  };
+
+  return (
+    <section id="projects" className="py-24 px-4 relative">
+      <div className="container mx-auto max-w-5xl">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+          Featured <span className="text-primary">Projects</span>
+        </h2>
+
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          A curated selection of projects that showcase clean design, practical
+          engineering, and real-world problem-solving. Click any card to explore
+          the full story behind each build.
+        </p>
+
+        {loading ? (
+          <p className="text-center text-muted-foreground">
+            Loading projects...
+          </p>
+        ) : projects.length === 0 ? (
+          <p className="text-center text-muted-foreground">No projects yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {renderProjects()}
+          </div>
+        )}
+
+        <div className="text-center mt-12">
+          <a
+            className="cosmic-button w-fit flex items-center mx-auto gap-2"
+            href="https://github.com/Olci2"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Check My Github
+            <ArrowRight size={16} />
+          </a>
+        </div>
+      </div>
+    </section>
   );
 };
